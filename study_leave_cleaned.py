@@ -4,12 +4,15 @@ from langchain_openai import ChatOpenAI
 from langchain.prompts.prompt import PromptTemplate
 from langchain_community.graphs import Neo4jGraph
 from neo4j import GraphDatabase
+import os
+import dotenv
 
 # Database connection setup
-uri = "bolt://localhost:7687"  # Ensure this matches your Neo4j instance
-user = "neo4j"
-password = "79807980"  # Replace with your actual password
-graph = Neo4jGraph(url="bolt://localhost:7687", username="neo4j", password="79807980")
+load_dotenv('.env', override=True)
+NEO4J_URI1 = os.getenv('NEO4J_URI1')
+NEO4J_USERNAME1 = os.getenv('NEO4J_USERNAME1')
+NEO4J_PASSWORD1 = os.getenv('NEO4J_PASSWORD1')
+NEO4J_DATABASE1 = os.getenv('NEO4J_DATABASE1')
 print("Connected to Neo4j")
 
 # Define the schema of your graph based on the entities and relationships
@@ -56,9 +59,9 @@ The question is:
 CYPHER_GENERATION_PROMPT = PromptTemplate(
     input_variables=["schema", "question"], template=CYPHER_GENERATION_TEMPLATE
 )
-
+OPENAI_API_KEY=os.getenv("openai_api_key")
 # Initialize the GraphCypherQAChain
-llm = ChatOpenAI(api_key="sk-proj-0WqmV5jiD2snXEX87iPYT3BlbkFJKgbZeIg4Cj210wYjh5aJ", temperature=0) 
+llm = ChatOpenAI(api_key=OPENAI_API_KEY, temperature=0) 
 # Initialize the GraphCypherQAChain without formatting the template here
 qa_chain = GraphCypherQAChain.from_llm(
     graph=graph,
